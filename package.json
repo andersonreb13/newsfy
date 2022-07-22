@@ -1,0 +1,38 @@
+{
+  "name": "newsfy",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "rimraf dist && tsc",
+    "preserver": "npm run build",
+    "server": "cross-env NODE_ENV=development concurrently \"tsc --watch\" \"nodemon -q dist/index.js\"",
+    "prestart": "npm run build",
+    "start": "cross-env NODE_ENV=production node dist/index.js",
+    "test": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/andersonreb13/newsfy.git"
+  },
+  "author": "andersonreb13",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/andersonreb13/newsfy/issues"
+  },
+  "homepage": "https://github.com/andersonreb13/newsfy#readme",
+  "dependencies": {
+    "@types/express": "^4.17.13",
+    "@types/node": "^18.0.6",
+    "cross-env": "^7.0.3",
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "helmet": "^5.1.0",
+    "rimraf": "^3.0.2",
+    "typescript": "^4.7.4"
+  },
+  "devDependencies": {
+    "concurrently": "^7.3.0",
+    "nodemon": "^2.0.19"
+  }
+}
