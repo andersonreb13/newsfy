@@ -1,6 +1,8 @@
-import express, { Express, Request, Response } from "express";
-import helmet from "helmet";
-import dotenv from "dotenv";
+import express, { Express } from "express";
+
+const helmet = require("helmet");
+const dotenv = require("dotenv");
+const routes = require("./routes/routes");
 
 dotenv.config();
 
@@ -8,9 +10,14 @@ const PORT = process.env.PORT || 3001;
 const app: Express = express();
 
 app.use(helmet());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-app.get("/", (req: Request, res: Response) => {
-	res.send("<h1>Hello from the TypeScript world!</h1>");
+app.use("/api", routes);
+
+app.listen(PORT, () => {
+	console.log(`🚀 Running on ${PORT}.`);
+}).on("error", (e) => {
+	console.log("❌ Oh no! Can not start the app.\n");
+	throw e;
 });
-
-app.listen(PORT, () => console.log(`Running on ${PORT} ⚡`));
