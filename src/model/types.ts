@@ -1,3 +1,10 @@
+export interface Raw {
+	channel: [
+		{
+			item: Article[];
+		}
+	];
+}
 export interface Article {
 	id: number;
 	importDate: Date;

@@ -1,8 +1,8 @@
-import { Article } from "./../model/types";
+import { Article, Raw } from "./../model/types";
 
 const connection = require("../services/db");
 
-exports.recordRssRaw = (rawContent: string) => {
+exports.recordRssRaw = (rawContent: Raw) => {
 	return new Promise((resolve, reject) => {
 		connection.query(
 			`INSERT INTO imports (importDate, rawContent) VALUES (?, ?);`,
