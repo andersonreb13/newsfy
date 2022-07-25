@@ -12,7 +12,7 @@ exports.importData = async (
 		const rssRaw = await service.importData(siteRssUrl);
 		res.status(201).send(rssRaw);
 	} catch (error) {
-		next(error);
+		res.status(500).send({ error: "An error occurred." });
 	}
 };
 
@@ -25,6 +25,6 @@ exports.listArticles = async (
 		const articles = await service.getArticles();
 		res.status(200).send(articles);
 	} catch (error) {
-		next(error);
+		res.status(500).send({ error: "An error occurred." });
 	}
 };
