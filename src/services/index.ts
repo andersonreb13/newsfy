@@ -11,21 +11,27 @@ const importData = async (url: string) => {
 
 		if (!rss) return { data: null };
 
-		repository.recordRssRaw(JSON.stringify(rss));
+		await repository.recordRssRaw(JSON.stringify(rss));
+		/** Antes de inserir os Artigos, fazer um select para um array artigosInseridos[].
+		 * Fazer uma lógica para que antes de inserir um novo artigo, verificar se o mesmo existe no array artigosInseridos[].
+		 * Caso EXISTA, cair no fluxo de UPDATE um Artigo já existente WHERE guid|externalId sejam iguais.
+		 * Caso NÃO EXISTA, cair no fluxo de INSERT de um novo Artigo.
+		 */
 		rss.channel[0].item.forEach((a: Article) => repository.addArticle(a));
 
 		return rss;
 	} catch (error) {
 		console.log({ error });
+		throw error;
 	}
 };
 
-const getArticles = () => {
+const getArticles = async () => {
 	try {
-		const result = repository.getArticles();
-		return result;
+		return repository.getArticles();
 	} catch (error) {
 		console.log({ error });
+		throw error;
 	}
 };
 
