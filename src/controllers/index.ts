@@ -8,7 +8,7 @@ exports.importData = async (
 	next: NextFunction
 ) => {
 	try {
-		const { siteRssUrl } = req.body;
+		const { siteRssUrl } = req.query;
 		const rssRaw = await service.importData(siteRssUrl);
 		res.status(201).send(rssRaw);
 	} catch (error) {
