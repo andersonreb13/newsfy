@@ -2,7 +2,23 @@ import * as core from "express-serve-static-core";
 export interface Raw {
 	channel: [
 		{
-			item: Article[];
+			item: [
+				{
+					importDate?: string[];
+					title: string[];
+					link: string[];
+					description: string[];
+					pubDate: string[];
+					guid: string[];
+					"media:content": [
+						{
+							$: {
+								url: string;
+							};
+						}
+					];
+				}
+			];
 		}
 	];
 }
