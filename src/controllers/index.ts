@@ -1,14 +1,20 @@
-import { Request, Response, NextFunction } from "express";
+import { Request, Response } from "express";
 
+import {
+	RequestType,
+	RequestBody,
+	RequestParams,
+	RequestQuery,
+	ResponseBody,
+} from "../model/types";
 const service = require("../services/");
 
 exports.importData = async (
-	req: Request,
-	res: Response,
-	next: NextFunction
+	req: RequestType<RequestParams, ResponseBody, RequestBody, RequestQuery>,
+	res: Response
 ) => {
 	try {
-		const { siteRssUrl } = req.query;
+		const { siteRssUrl }: { siteRssUrl: string } = req.query;
 		const rssRaw = await service.importData(siteRssUrl);
 		res.status(201).send(rssRaw);
 	} catch (error) {
@@ -16,11 +22,7 @@ exports.importData = async (
 	}
 };
 
-exports.listArticles = async (
-	req: Request,
-	res: Response,
-	next: NextFunction
-) => {
+exports.listArticles = async (req: Request, res: Response) => {
 	try {
 		const articles = await service.getArticles();
 		res.status(200).send(articles);

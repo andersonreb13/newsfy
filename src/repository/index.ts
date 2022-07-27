@@ -1,10 +1,9 @@
-import { Article, Raw } from "./../model/types";
+import { Article } from "./../model/types";
+import mysqlConn from "../connection/mysql";
 
-const connection = require("../services/db");
-
-exports.recordRssRaw = (rawContent: Raw) => {
+exports.recordRssRaw = (rawContent: string) => {
 	return new Promise((resolve, reject) => {
-		connection.query(
+		mysqlConn.query(
 			`INSERT INTO imports (importDate, rawContent) VALUES (?, ?);`,
 			[new Date(), rawContent],
 			(error: Object, results: Object) => {
@@ -14,9 +13,9 @@ exports.recordRssRaw = (rawContent: Raw) => {
 	});
 };
 
-exports.addArticle = (article: Article) => {
+exports.saveArticles = (article: Article) => {
 	return new Promise((resolve, reject) => {
-		connection.query(
+		mysqlConn.query(
 			`INSERT INTO articles (
 				externalId,
 				importDate,
@@ -53,9 +52,9 @@ exports.addArticle = (article: Article) => {
 	});
 };
 
-exports.getArticles = () => {
+exports.getAllArticles = (): Promise<Article[]> => {
 	return new Promise((resolve, reject) => {
-		connection.query(
+		mysqlConn.query(
 			`SELECT * FROM articles;`,
 			(error: Object, results: Article[]) => {
 				error ? reject(error) : resolve(results);

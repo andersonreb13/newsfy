@@ -1,6 +1,6 @@
 import { Article } from "../model/types";
 
-const articleFactory = (list: any): Article[] => {
+export const articleFactory = (list: any): Article[] => {
 	const articlesList = list.map((element: any) => {
 		let article = {} as Article;
 
@@ -17,5 +17,3 @@ const articleFactory = (list: any): Article[] => {
 	});
 	return articlesList;
 };
-
-module.exports = { articleFactory };

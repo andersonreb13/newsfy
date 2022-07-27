@@ -1,11 +1,12 @@
-import { Raw, Article } from "../model/types";
-const { articleFactory } = require("../helper/articleFactory");
+import axios from "axios";
+import xml2js from "xml2js";
 
-const axios = require("axios");
-const xml2js = require("xml2js");
+import { Raw, Article } from "../model/types";
+import { articleFactory } from "../helper/factory";
+
 const repository = require("../repository");
 
-const importData = async (url: string) => {
+exports.importData = async (url: string) => {
 	try {
 		const { data } = await axios.get(url);
 		const { rss } = await xml2js.parseStringPromise(data);
@@ -14,9 +15,18 @@ const importData = async (url: string) => {
 		await saveRaw(rss);
 
 		const articles: Article[] = articleFactory(rss.channel[0].item);
-		await saveArticles(articles);
+		await save(articles);
 
 		return rss;
+	} catch (error) {
+		console.log({ error });
+		throw error;
+	}
+};
+
+exports.getArticles = async (): Promise<Article[]> => {
+	try {
+		return repository.getAllArticles();
 	} catch (error) {
 		console.log({ error });
 		throw error;
@@ -32,33 +42,20 @@ const saveRaw = async (raw: Raw) => {
 	}
 };
 
-const saveArticles = async (articlesIncomingList: Article[]) => {
+const save = async (articlesIncomingList: Article[]) => {
 	try {
-		const currentExtIdArticles: Article[] = await repository.getArticles();
+		const currentExtIdArticles: Article[] =
+			await repository.getAllArticles();
 
 		articlesIncomingList.forEach((articleIncoming: Article) => {
 			currentExtIdArticles.some((item) => {
 				item.externalId === articleIncoming.externalId &&
 					(articleIncoming.id = item.id);
 			});
-			repository.addArticle(articleIncoming);
+			repository.saveArticles(articleIncoming);
 		});
 	} catch (error) {
 		console.log({ error });
 		throw error;
 	}
-};
-
-const getArticles = async () => {
-	try {
-		return repository.getArticles();
-	} catch (error) {
-		console.log({ error });
-		throw error;
-	}
-};
-
-module.exports = {
-	importData,
-	getArticles,
 };
