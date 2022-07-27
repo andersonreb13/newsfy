@@ -24,19 +24,29 @@ exports.addArticle = (article: Article) => {
 				description,
 				publicationDate,
 				link,
-				mainPicture
-			) VALUES (?, ?, ?, ?, ?, ?, ?);`,
+				mainPicture,
+				id
+			) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+			ON DUPLICATE KEY UPDATE 
+				externalId = VALUES(externalId),
+				importDate = VALUES(importDate),
+				title = VALUES(title),
+				description = VALUES(description),
+				publicationDate = VALUES(publicationDate),
+				link = VALUES(link),
+				mainPicture = VALUES(mainPicture)
+			;`,
 			[
-				article.guid,
+				article.externalId,
 				new Date(),
 				article.title,
 				article.description,
-				new Date(article.pubDate.toString()),
+				article.publicationDate,
 				article.link,
-				article["media:content"][1]?.["$"]["url"] ||
-					article["media:content"][0]?.["$"]["url"],
+				article.mainPicture,
+				article.id,
 			],
-			(error: Object, results: Object) => {
+			(error: Object, results: Article[]) => {
 				error ? reject(error) : resolve(results);
 			}
 		);
@@ -48,45 +58,6 @@ exports.getArticles = () => {
 		connection.query(
 			`SELECT * FROM articles;`,
 			(error: Object, results: Article[]) => {
-				error ? reject(error) : resolve(results);
-			}
-		);
-	});
-};
-
-exports.getAllExternalId = () => {
-	return new Promise((resolve, reject) => {
-		connection.query(
-			`SELECT externalId FROM articles;`,
-			(error: Object, results: any) => {
-				error ? reject(error) : resolve(results);
-			}
-		);
-	});
-};
-
-exports.updateArticle = (article: Article) => {
-	return new Promise((resolve, reject) => {
-		connection.query(
-			`UPDATE articles SET
-				importDate = ?,
-				title = ?,
-				description = ?,
-				publicationDate = ?,
-				link = ?,
-				mainPicture = ?
-			WHERE externalId = ?`,
-			[
-				new Date(),
-				article.title,
-				article.description,
-				new Date(article.pubDate.toString()),
-				article.link,
-				article["media:content"][1]?.["$"]["url"] ||
-					article["media:content"][0]?.["$"]["url"],
-				article.guid,
-			],
-			(error: Object, results: Object) => {
 				error ? reject(error) : resolve(results);
 			}
 		);

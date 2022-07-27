@@ -1,6 +1,5 @@
-import { ExternalId } from "./../model/types";
 import { Raw, Article } from "../model/types";
-const { toArticle } = require("../helper/articleFactory");
+const { articleFactory } = require("../helper/articleFactory");
 
 const axios = require("axios");
 const xml2js = require("xml2js");
@@ -13,7 +12,9 @@ const importData = async (url: string) => {
 
 		if (!rss) return;
 		await saveRaw(rss);
-		await saveArticles(rss.channel[0].item);
+
+		const articles: Article[] = articleFactory(rss.channel[0].item);
+		await saveArticles(articles);
 
 		return rss;
 	} catch (error) {
@@ -31,25 +32,16 @@ const saveRaw = async (raw: Raw) => {
 	}
 };
 
-// Improvement method
-const saveArticles = async (articlesIncomingList: any[]) => {
+const saveArticles = async (articlesIncomingList: Article[]) => {
 	try {
-		const currentExtIdArticles: ExternalId[] =
-			await repository.getAllExternalId();
-		const addedArticles: string[] = currentExtIdArticles.map(
-			(c: ExternalId) => c.externalId
-		);
+		const currentExtIdArticles: Article[] = await repository.getArticles();
 
-		articlesIncomingList.forEach((articleIncoming: any) => {
-			const article: Article = articleIncoming.guid[0].hasOwnProperty("_")
-				? toArticle(articleIncoming)
-				: articleIncoming;
-
-			if (addedArticles.includes(article.guid[0])) {
-				repository.updateArticle(article);
-			} else {
-				repository.addArticle(article);
-			}
+		articlesIncomingList.forEach((articleIncoming: Article) => {
+			currentExtIdArticles.some((item) => {
+				item.externalId === articleIncoming.externalId &&
+					(articleIncoming.id = item.id);
+			});
+			repository.addArticle(articleIncoming);
 		});
 	} catch (error) {
 		console.log({ error });
