@@ -7,7 +7,7 @@ const conn = mysql.createConnection({
 	database: "newsfy",
 });
 
-conn.connect((e: any) => {
+conn.connect((e: Object) => {
 	if (e) {
 		console.log("❌ Oh no! Can not connect on MySQL!\n");
 		throw e;
