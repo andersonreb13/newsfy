@@ -15,4 +15,4 @@ conn.connect((e: Object) => {
 	console.log("🔋 Connected on MySQL.");
 });
 
-module.exports = conn;
+export default conn;
