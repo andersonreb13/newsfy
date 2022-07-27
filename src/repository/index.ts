@@ -53,3 +53,42 @@ exports.getArticles = () => {
 		);
 	});
 };
+
+exports.getAllExternalId = () => {
+	return new Promise((resolve, reject) => {
+		connection.query(
+			`SELECT externalId FROM articles;`,
+			(error: Object, results: any) => {
+				error ? reject(error) : resolve(results);
+			}
+		);
+	});
+};
+
+exports.updateArticle = (article: Article) => {
+	return new Promise((resolve, reject) => {
+		connection.query(
+			`UPDATE articles SET
+				importDate = ?,
+				title = ?,
+				description = ?,
+				publicationDate = ?,
+				link = ?,
+				mainPicture = ?
+			WHERE externalId = ?`,
+			[
+				new Date(),
+				article.title,
+				article.description,
+				new Date(article.pubDate.toString()),
+				article.link,
+				article["media:content"][1]?.["$"]["url"] ||
+					article["media:content"][0]?.["$"]["url"],
+				article.guid,
+			],
+			(error: Object, results: Object) => {
+				error ? reject(error) : resolve(results);
+			}
+		);
+	});
+};
