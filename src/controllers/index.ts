@@ -6,6 +6,7 @@ import {
 	RequestParams,
 	RequestQuery,
 	ResponseBody,
+	Article,
 } from "../model/types";
 const service = require("../services/");
 
@@ -15,7 +16,7 @@ exports.importData = async (
 ) => {
 	try {
 		const { siteRssUrl }: { siteRssUrl: string } = req.query;
-		const rssRaw = await service.importData(siteRssUrl);
+		const rssRaw: Article[] = await service.importData(siteRssUrl);
 		res.status(201).send(rssRaw);
 	} catch (error) {
 		res.status(500).send({ error: "An error occurred." });
