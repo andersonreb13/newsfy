@@ -40,7 +40,7 @@ exports.saveArticles = (article: Article) => {
 				new Date(),
 				article.title,
 				article.description,
-				article.publicationDate,
+				new Date(article.publicationDate),
 				article.link,
 				article.mainPicture,
 				article.id,
