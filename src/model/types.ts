@@ -25,11 +25,11 @@ export interface Raw {
 
 export interface Article {
 	id?: number;
-	importDate?: Date;
+	importDate?: string;
 	title: string;
 	link: string;
 	description: string;
-	publicationDate: Date;
+	publicationDate: string;
 	externalId: string;
 	mainPicture: string;
 }
