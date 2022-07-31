@@ -2,14 +2,14 @@
   "name": "newsfy",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/index.js",
+  "main": "dist/app.js",
   "scripts": {
     "build": "rimraf dist && tsc",
     "preserver": "npm run build",
     "server": "cross-env NODE_ENV=development concurrently \"tsc --watch\" \"nodemon -q dist/app.js\"",
     "prestart": "npm run build",
     "start": "cross-env NODE_ENV=production node dist/app.js",
-    "test": "jest --coverage",
+    "test": "jest src/ --coverage ",
     "test:watch": "jest --watch"
   },
   "repository": {
